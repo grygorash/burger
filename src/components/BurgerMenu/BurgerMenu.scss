@@ -1,0 +1,97 @@
+.menu-list {
+	flex-flow: row wrap;
+	justify-content: center;
+	.menu-item {
+		padding: 0;
+		overflow: hidden;
+		position: relative;
+		width: 100%;
+		max-width: 478px;
+		&:before {
+			position: absolute;
+			content: '';
+			background: rgba(0, 0, 0, .7);
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 447px;
+			opacity: 0;
+			transition: all .3s;
+		}
+		img {
+			width: 480px;
+			height: 447px;
+			margin: 0 auto;
+			display: block;
+		}
+		.btn {
+			width: 100%;
+			background-color: #fff;
+			color: #de5b22;
+			opacity: .2;
+		}
+		.burger-info {
+			justify-content: space-between;
+			padding: 20px;
+			transition: all .3s;
+			align-items: center;
+			width: 100%;
+			&__name {
+				text-transform: uppercase;
+				span {
+					font-weight: 700;
+					text-shadow: 1px 1px 1px #00000061;
+				}
+			}
+			&__price {
+				color: #de5b22;
+				font-size: 18px;
+				font-weight: 700;
+				text-shadow: 1px 1px 1px #00000061;
+			}
+
+		}
+		.burger-info-detail {
+			position: absolute;
+			width: 100%;
+			top: 0;
+			left: 0;
+			color: #fff;
+			padding: 20px;
+			opacity: 0;
+			transition: all .3s;
+			.ingredient {
+				font-size: 16px;
+				margin-bottom: 10px;
+				color: #e05c22;
+				p {
+					font-size: 14px;
+					color: #fff;
+					padding-left: 16px;
+				}
+			}
+		}
+		&:hover {
+			.btn {
+				opacity: 1;
+				color: #fff;
+				background: #de5b22;
+				&:hover {
+					background: #fff;
+					color: #e05c22;
+				}
+			}
+			&:before {
+				opacity: 1;
+			}
+			.burger-info {
+				color: #fff;
+				background: #000;
+			}
+			.burger-info-detail {
+				opacity: 1;
+			}
+		}
+
+	}
+}
