@@ -1,4 +1,4 @@
-# dNd Boards.js
+# Burgers.js
 ## Install
 1. `npm i`
 2. `npm start`
