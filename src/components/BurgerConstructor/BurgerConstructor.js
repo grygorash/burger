@@ -1,9 +1,8 @@
 import React from 'react';
-import { Col }from 'reactstrap';
 
 const BurgerConstructor = () =>
-  <Col xs="12">
+  <div className="constructor-content container">
     constructor
-  </Col>;
+  </div>;
 
 export default BurgerConstructor;
