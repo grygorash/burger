@@ -1,12 +1,19 @@
 import {
   ADD_TO_CART,
+  BUN_ADD,
+  CHEESE_ADD,
   CLEAN_CART,
+  CONSTRUCTOR_NEXT,
+  CONSTRUCTOR_PREV,
   FEEDBACK_TEL,
   FETCH_FAILURE,
   FETCH_LOCAL_SUCCESS,
   FETCH_START,
-  FETCH_SUCCESS, MODAL_CLOSE, MODAL_OPEN,
-  REMOVE_FROM_CART
+  FETCH_SUCCESS,
+  INGREDIENT_ADD, INGREDIENT_REMOVE,
+  MODAL_CLOSE,
+  MODAL_OPEN,
+  REMOVE_FROM_CART, SAUCE_ADD
 } from '../actionTypes';
 import { initialState } from '../reducers';
 
@@ -76,5 +83,33 @@ export const cleanCart = (burger) => {
   return {
     type: CLEAN_CART,
     burger
+  };
+};
+
+export const constructorNext = () => {
+  return {
+    type: CONSTRUCTOR_NEXT
+  };
+};
+
+export const constructorPrev = () => {
+  return {
+    type: CONSTRUCTOR_PREV
+  };
+};
+
+export const ingredientAdd = (ingredient, ingredientName) => {
+  return {
+    type: INGREDIENT_ADD,
+    ingredient,
+    ingredientName
+  };
+};
+
+export const ingredientRemove = (ingredient, ingredientName) => {
+  return {
+    type: INGREDIENT_REMOVE,
+    ingredient,
+    ingredientName
   };
 };

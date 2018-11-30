@@ -1,9 +1,12 @@
 import {
   ADD_TO_CART,
   CLEAN_CART,
+  CONSTRUCTOR_NEXT,
+  CONSTRUCTOR_PREV,
   FEEDBACK_TEL,
   FETCH_LOCAL_SUCCESS,
   FETCH_SUCCESS,
+  INGREDIENT_ADD, INGREDIENT_REMOVE,
   MODAL_CLOSE,
   MODAL_OPEN,
   REMOVE_FROM_CART
@@ -121,96 +124,118 @@ export const initialState = {
     bun: [
       {
         ingredientName: 'булочка с кунжутом',
-        price: 80
+        price: 80,
+        added: false
       },
       {
         ingredientName: 'булочка',
-        price: 70
+        price: 70,
+        added: false
       }
     ],
     meat: [
       {
         ingredientName: 'котлета телятина',
-        price: 80
+        price: 80,
+        added: false
       },
       {
         ingredientName: 'котлета свинина',
-        price: 80
+        price: 80,
+        added: false
       },
       {
         ingredientName: 'котлета говядина',
-        price: 80
+        price: 80,
+        added: false
       },
       {
         ingredientName: 'котлета курица',
-        price: 60
+        price: 60,
+        added: false
       },
       {
         ingredientName: 'котлета индейка',
-        price: 100
+        price: 100,
+        added: false
       }
     ],
     cheese: [
       {
         ingredientName: 'сыр эмменталь',
-        price: 20
+        price: 20,
+        added: false
       },
       {
         ingredientName: 'сыр моцарелла',
-        price: 15
+        price: 15,
+        added: false
       },
       {
         ingredientName: 'сыр гауда',
-        price: 30
+        price: 30,
+        added: false
       },
       {
         ingredientName: 'сыр чеддер',
-        price: 25
+        price: 25,
+        added: false
       }
     ],
     sauce: [
       {
         ingredientName: 'горчица',
-        price: 15
+        price: 15,
+        added: false
       },
       {
         ingredientName: 'кетчуп',
-        price: 15
+        price: 15,
+        added: false
       },
       {
         ingredientName: 'майонез',
-        price: 15
+        price: 15,
+        added: false
       },
       {
         ingredientName: 'соус bbq',
-        price: 30
+        price: 30,
+        added: false
       },
       {
         ingredientName: 'соус песто',
-        price: 30
+        price: 30,
+        added: false
       }
     ],
     vegetables: [
       {
         ingredientName: 'огурцы',
-        price: 10
+        price: 10,
+        added: false
       },
       {
         ingredientName: 'помидоры',
-        price: 10
+        price: 10,
+        added: false
       },
       {
         ingredientName: 'айсберг',
-        price: 10
+        price: 10,
+        added: false
       },
       {
         ingredientName: 'красный лук',
-        price: 10
+        price: 10,
+        added: false
       }
     ]
   },
+  burgersConstructor: {},
   cart: [],
   feedbackTel: '',
+  constructorStep: 1,
   modals: {
     cart: false,
     feedback: false
@@ -226,7 +251,7 @@ export function rootReducer(state = initialState, action) {
       return {...state, cart: action.cart};
 
     case ADD_TO_CART:
-      return dotProp.set(state, `cart`, cart => [...cart, {...action.burger, burgerId: +new Date(), discount: false}]);
+      return dotProp.set(state, `cart`, cart => [...cart, {...action.burger, burgerId: +new Date()}]);
 
     case REMOVE_FROM_CART:
       const removedBurgerIndex = state.cart.findIndex(burger => burger.burgerId === action.burger.burgerId);
@@ -243,6 +268,79 @@ export function rootReducer(state = initialState, action) {
 
     case CLEAN_CART:
       return dotProp.set(state, `cart`, []);
+
+    case INGREDIENT_ADD:
+      if (action.ingredientName === 'bun') {
+        const indexOfIngredientAdded = state.ingredients.bun.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
+        return dotProp.set(
+          dotProp.set(
+            dotProp.set(state, `ingredients.bun`, [{ingredientName: 'булочка с кунжутом', price: 80, added: false}, {ingredientName: 'булочка', price: 70, added: false}]),
+            `ingredients.bun.${indexOfIngredientAdded}.added`,
+            true
+          ),
+          `burgersConstructor.bun`,
+          [action.ingredient]
+        );
+      } else if (action.ingredientName === 'meat') {
+        const indexOfIngredientAdded = state.ingredients.meat.findIndex(meat => meat.ingredientName === action.ingredient.ingredientName);
+        return dotProp.set(
+          dotProp.set(state, `ingredients.meat.${indexOfIngredientAdded}.added`, true),
+          `burgersConstructor.meat`,
+          meat => [...meat, action.ingredient]
+        );
+      } else if (action.ingredientName === 'cheese') {
+        const indexOfIngredientAdded = state.ingredients.cheese.findIndex(cheese => cheese.ingredientName === action.ingredient.ingredientName);
+        return dotProp.set(
+          dotProp.set(state, `ingredients.cheese.${indexOfIngredientAdded}.added`, true),
+          `burgersConstructor.cheese`,
+          cheese => [...cheese, action.ingredient]
+        );
+      } else if (action.ingredientName === 'sauce') {
+        const indexOfIngredientAdded = state.ingredients.sauce.findIndex(sauce => sauce.ingredientName === action.ingredient.ingredientName);
+        return dotProp.set(
+          dotProp.set(state, `ingredients.sauce.${indexOfIngredientAdded}.added`, true),
+          `burgersConstructor.sauce`,
+          sauce => [...sauce, action.ingredient]
+        );
+      } else if (action.ingredientName === 'vegetables') {
+        const indexOfIngredientAdded = state.ingredients.vegetables.findIndex(vegetables => vegetables.ingredientName === action.ingredient.ingredientName);
+        return dotProp.set(
+          dotProp.set(state, `ingredients.vegetables.${indexOfIngredientAdded}.added`, true),
+          `burgersConstructor.vegetables`,
+          vegetables => [...vegetables, action.ingredient]
+        );
+      } else {
+        return state;
+      }
+
+    case INGREDIENT_REMOVE:
+      if (action.ingredientName === 'bun') {
+        const indexOfIngredientRemoved = state.ingredients.bun.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
+        const indexOfConstructorRemoved = state.burgersConstructor.bun.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
+        return dotProp.delete(
+          dotProp.set(state, `ingredients.bun.${indexOfIngredientRemoved}.added`, false),
+          `burgersConstructor.bun.${indexOfConstructorRemoved}`);
+      } else if (action.ingredientName === 'meat') {
+        const indexOfIngredientRemoved = state.ingredients.meat.findIndex(meat => meat.ingredientName === action.ingredient.ingredientName);
+        const indexOfConstructorRemoved = state.burgersConstructor.meat.findIndex(meat => meat.ingredientName === action.ingredient.ingredientName);
+        return dotProp.delete(
+          dotProp.set(state, `ingredients.meat.${indexOfIngredientRemoved}.added`, false),
+          `burgersConstructor.meat.${indexOfConstructorRemoved}`);
+      } else {
+        return state;
+      }
+
+    case CONSTRUCTOR_NEXT:
+      return {
+        ...state,
+        constructorStep: state.constructorStep + 1
+      };
+
+    case CONSTRUCTOR_PREV:
+      return {
+        ...state,
+        constructorStep: state.constructorStep - 1
+      };
 
     default:
       return state;

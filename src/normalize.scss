@@ -286,6 +286,10 @@ th {
 		background-color: #fff;
 		color: #e05c22;
 	}
+	&.disabled{
+		background-color: #eee;
+		pointer-events: none;
+	}
 }
 
 .carousel-content,

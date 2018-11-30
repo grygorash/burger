@@ -1,0 +1,65 @@
+.constructor-content {
+	.constructor-step {
+		visibility: hidden;
+		opacity: 0;
+		transition: all .3s;
+		text-align: center;
+		display: none;
+		&.active {
+			visibility: visible;
+			opacity: 1;
+			display: block;
+		}
+		h3 {
+			text-align: center;
+			font-size: 32px;
+			margin-top: 50px;
+			font-weight: 700;
+		}
+		.ingredients-list {
+			justify-content: center;
+			margin: 50px 0;
+			.ingredient:not(:last-child) {
+				margin-right: 20px;
+			}
+			.ingredient {
+				cursor: pointer;
+				transition: all .3s;
+				border: 2px solid #000;
+				position: relative;
+				&:hover, &.active {
+					border: 2px solid #e05c22;
+				}
+				&.active {
+					pointer-events: none;
+				}
+				p {
+					text-align: center;
+					font-size: 14px;
+					font-weight: 700;
+				}
+				.ingredient-name {
+					text-transform: uppercase;
+				}
+				.ingredient-price {
+					color: #e05c22;
+				}
+			}
+			.btn {
+				opacity: 0;
+				visibility: hidden;
+				height: 20px;
+				width: 20px;
+				padding: 0;
+				transition: all .3s;
+				&.show {
+					opacity: 1;
+					visibility: visible;
+				}
+			}
+		}
+		.btn.constructor-prev {
+			margin-right: 10px;
+		}
+	}
+}
