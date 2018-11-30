@@ -61,7 +61,7 @@ const BurgerConstructor = (props) => {
             .map((meat, i) =>
                    <Fragment key={i}>
                      <button className={meat.added ? 'btn show' : 'btn'}
-                             onClick={() => props.ingredientRemove({ingredientName: meat.ingredientName}, 'bun')}>X
+                             onClick={() => props.ingredientRemove({ingredientName: meat.ingredientName}, 'meat')}>X
                      </button>
                      <div className={meat.added ? 'ingredient active' : 'ingredient'}
                           onClick={() => props.ingredientAdd({ingredientName: meat.ingredientName, price: meat.price}, 'meat')}>
@@ -81,7 +81,7 @@ const BurgerConstructor = (props) => {
         <button className="btn constructor-prev"
                 onClick={() => props.constructorPrev()}>Предыдущий шаг
         </button>
-        <button className={props.burgersConstructor.meat !== undefined ?
+        <button className={props.burgersConstructor.meat !== undefined && props.burgersConstructor.meat.length ?
           'btn constructor-next' : 'btn constructor-next disabled'}
                 onClick={() => props.constructorNext()}>Следующий шаг
         </button>
