@@ -1,7 +1,5 @@
 import {
   ADD_TO_CART,
-  BUN_ADD,
-  CHEESE_ADD,
   CLEAN_CART,
   CONSTRUCTOR_NEXT,
   CONSTRUCTOR_PREV,
@@ -13,7 +11,7 @@ import {
   INGREDIENT_ADD, INGREDIENT_REMOVE,
   MODAL_CLOSE,
   MODAL_OPEN,
-  REMOVE_FROM_CART, SAUCE_ADD
+  REMOVE_FROM_CART
 } from '../actionTypes';
 import { initialState } from '../reducers';
 
@@ -44,10 +42,11 @@ export const fetchInitialState = () => async dispatch => {
   }
 };
 
-export const addToCart = (burger) => {
+export const addToCart = (burger, pathname) => {
   return {
     type: ADD_TO_CART,
-    burger
+    burger,
+    pathname
   };
 };
 

@@ -13,6 +13,7 @@ import BurgerMenu from '../BurgerMenu/BurgerMenu';
 import BurgerConstructor from '../BurgerConstructor/BurgerConstructor';
 import BurgerCart from '../BurgerCart/BurgerCart';
 import { fetchInitialState } from '../../actions';
+import BurgerContacts from '../BurgerContacts/BurgerContacts';
 
 const methods = {
   componentDidMount(props) {
@@ -38,6 +39,10 @@ const App = (props) =>
       <Route
         path="/constructor"
         component={BurgerConstructor}
+      />
+      <Route
+        path="/contacts"
+        component={BurgerContacts}
       />
       <Route
         path="/cart"

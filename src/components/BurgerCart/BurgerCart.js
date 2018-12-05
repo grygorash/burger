@@ -19,7 +19,7 @@ const BurgerCart = props =>
                    <div className="cart-item__info">
                      <div className="cart-item__info--details">
                        <div>{burger.burgerName}</div>
-                         <div>{burger.totalPrice} UAH</div>
+                       <div>{burger.totalPrice} UAH</div>
                      </div>
                      <div className="cart-item__info--ingredients">
                        {Object
@@ -27,14 +27,19 @@ const BurgerCart = props =>
                          .map(
                            (ingredient, i) =>
                              <div key={i} className="ingredient">
-                               {ingredient[0] === 'bun' ? 'Булочка:' :
+                               {ingredient[0] === 'bun' ? 'Основа:' :
                                  ingredient[0] === 'meat' ? 'Мясо:' :
                                    ingredient[0] === 'cheese' ? 'Сыры:' :
                                      ingredient[0] === 'sauce' ? 'Соусы:' :
                                        'Овощи:'}
                                {ingredient[1]
-                                 .map((item, i) =>
-                                        <p key={i}>● {item}</p>
+                                 .map((item, i) => {
+                                        if (typeof item === 'object') {
+                                          return <p key={i}>● {item.ingredientName}</p>;
+                                        } else {
+                                          return <p key={i}>● {item}</p>;
+                                        }
+                                      }
                                  )}
                              </div>
                          )}

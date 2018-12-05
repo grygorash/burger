@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
 
-import { constructorNext, constructorPrev, ingredientAdd, ingredientRemove } from '../../actions';
+import { addToCart, constructorNext, constructorPrev, ingredientAdd, ingredientRemove } from '../../actions';
+import { getConstructorSum } from '../../selectors';
 import bunWithSesame from '../../img/bun-with-sesame.jpg';
 import bunWithoutSesame from '../../img/bun.jpg';
 import veal from '../../img/veal.jpg';
@@ -27,6 +29,17 @@ import './BurgerConstructor.css';
 
 
 const BurgerConstructor = (props) => {
+  const handleAddToCart = (constructorIngredients) => {
+    props.addToCart({
+                      burgerId: +new Date(),
+                      burgerName: 'Свой Бургер',
+                      totalPrice: props.getConstructorSum,
+                      burgerImg: 'https://png.pngtree.com/svg/20161106/hamburger_burger_31438.png',
+                      ingredients: {...constructorIngredients}
+                    }, props.location.pathname);
+    props.history.push('menu');
+  };
+
   return (
     <div className="constructor-content">
       <div className={props.constructorStep === 1 ? 'constructor-step active' : 'constructor-step'}>
@@ -81,8 +94,7 @@ const BurgerConstructor = (props) => {
         <button className="btn constructor-prev"
                 onClick={() => props.constructorPrev()}>Предыдущий шаг
         </button>
-        <button className={props.burgersConstructor.meat !== undefined && props.burgersConstructor.meat.length ?
-          'btn constructor-next' : 'btn constructor-next disabled'}
+        <button className="btn constructor-next"
                 onClick={() => props.constructorNext()}>Следующий шаг
         </button>
       </div>
@@ -92,26 +104,29 @@ const BurgerConstructor = (props) => {
         <div className="ingredients-list flex">
           {props.ingredients.cheese
             .map((cheese, i) =>
-                   <div key={i}
-                        className={cheese.added ? 'ingredient active' : 'ingredient'}
-                        onClick={() => props.ingredientAdd({ingredientName: cheese.ingredientName, price: cheese.price}, 'cheese')}>
-                     <img src={
-                       cheese.ingredientName === 'сыр эмменталь' ? emmental :
-                         cheese.ingredientName === 'сыр моцарелла' ? mozzarella :
-                           cheese.ingredientName === 'сыр гауда' ? gouda :
-                             cheddar
-                     }
-                          alt="ingredient" />
-                     <p className="ingredient-name">{cheese.ingredientName}</p>
-                     <p className="ingredient-price">Цена: {cheese.price} UAH</p>
-                   </div>
+                   <Fragment key={i}>
+                     <button className={cheese.added ? 'btn show' : 'btn'}
+                             onClick={() => props.ingredientRemove({ingredientName: cheese.ingredientName}, 'cheese')}>X
+                     </button>
+                     <div className={cheese.added ? 'ingredient active' : 'ingredient'}
+                          onClick={() => props.ingredientAdd({ingredientName: cheese.ingredientName, price: cheese.price}, 'cheese')}>
+                       <img src={
+                         cheese.ingredientName === 'сыр эмменталь' ? emmental :
+                           cheese.ingredientName === 'сыр моцарелла' ? mozzarella :
+                             cheese.ingredientName === 'сыр гауда' ? gouda :
+                               cheddar
+                       }
+                            alt="ingredient" />
+                       <p className="ingredient-name">{cheese.ingredientName}</p>
+                       <p className="ingredient-price">Цена: {cheese.price} UAH</p>
+                     </div>
+                   </Fragment>
             )}
         </div>
         <button className="btn constructor-prev"
                 onClick={() => props.constructorPrev()}>Предыдущий шаг
         </button>
-        <button className={props.burgersConstructor.cheese !== undefined ?
-          'btn constructor-next' : 'btn constructor-next disabled'}
+        <button className="btn constructor-next"
                 onClick={() => props.constructorNext()}>Следующий шаг
         </button>
       </div>
@@ -121,27 +136,30 @@ const BurgerConstructor = (props) => {
         <div className="ingredients-list flex">
           {props.ingredients.sauce
             .map((sauce, i) =>
-                   <div key={i}
-                        className={sauce.added ? 'ingredient active' : 'ingredient'}
-                        onClick={() => props.ingredientAdd({ingredientName: sauce.ingredientName, price: sauce.price}, 'sauce')}>
-                     <img src={
-                       sauce.ingredientName === 'горчица' ? mustard :
-                         sauce.ingredientName === 'кетчуп' ? ketchup :
-                           sauce.ingredientName === 'майонез' ? mayonnaise :
-                             sauce.ingredientName === 'соус bbq' ? bbq :
-                               pesto
-                     }
-                          alt="ingredient" />
-                     <p className="ingredient-name">{sauce.ingredientName}</p>
-                     <p className="ingredient-price">Цена: {sauce.price} UAH</p>
-                   </div>
+                   <Fragment key={i}>
+                     <button className={sauce.added ? 'btn show' : 'btn'}
+                             onClick={() => props.ingredientRemove({ingredientName: sauce.ingredientName}, 'sauce')}>X
+                     </button>
+                     <div className={sauce.added ? 'ingredient active' : 'ingredient'}
+                          onClick={() => props.ingredientAdd({ingredientName: sauce.ingredientName, price: sauce.price}, 'sauce')}>
+                       <img src={
+                         sauce.ingredientName === 'горчица' ? mustard :
+                           sauce.ingredientName === 'кетчуп' ? ketchup :
+                             sauce.ingredientName === 'майонез' ? mayonnaise :
+                               sauce.ingredientName === 'соус bbq' ? bbq :
+                                 pesto
+                       }
+                            alt="ingredient" />
+                       <p className="ingredient-name">{sauce.ingredientName}</p>
+                       <p className="ingredient-price">Цена: {sauce.price} UAH</p>
+                     </div>
+                   </Fragment>
             )}
         </div>
         <button className="btn constructor-prev"
                 onClick={() => props.constructorPrev()}>Предыдущий шаг
         </button>
-        <button className={props.burgersConstructor.sauce !== undefined ?
-          'btn constructor-next' : 'btn constructor-next disabled'}
+        <button className="btn constructor-next"
                 onClick={() => props.constructorNext()}>Следующий шаг
         </button>
       </div>
@@ -151,34 +169,55 @@ const BurgerConstructor = (props) => {
         <div className="ingredients-list flex">
           {props.ingredients.vegetables
             .map((vegetable, i) =>
-                   <div key={i}
-                        className={vegetable.added ? 'ingredient active' : 'ingredient'}
-                        onClick={() => props.ingredientAdd({ingredientName: vegetable.ingredientName, price: vegetable.price}, 'vegetables')}>
-                     <img src={
-                       vegetable.ingredientName === 'огурцы' ? cucumber :
-                         vegetable.ingredientName === 'помидоры' ? tomato :
-                           vegetable.ingredientName === 'красный лук' ? onion :
-                             iceberg
-                     }
-                          alt="ingredient" />
-                     <p className="ingredient-name">{vegetable.ingredientName}</p>
-                     <p className="ingredient-price">Цена: {vegetable.price} UAH</p>
-                   </div>
+                   <Fragment key={i}>
+                     <button className={vegetable.added ? 'btn show' : 'btn'}
+                             onClick={() => props.ingredientRemove({ingredientName: vegetable.ingredientName}, 'vegetables')}>X
+                     </button>
+                     <div className={vegetable.added ? 'ingredient active' : 'ingredient'}
+                          onClick={() => props.ingredientAdd({ingredientName: vegetable.ingredientName, price: vegetable.price}, 'vegetables')}>
+                       <img src={
+                         vegetable.ingredientName === 'огурцы' ? cucumber :
+                           vegetable.ingredientName === 'помидоры' ? tomato :
+                             vegetable.ingredientName === 'красный лук' ? onion :
+                               iceberg
+                       }
+                            alt="ingredient" />
+                       <p className="ingredient-name">{vegetable.ingredientName}</p>
+                       <p className="ingredient-price">Цена: {vegetable.price} UAH</p>
+                     </div>
+                   </Fragment>
             )}
         </div>
         <button className="btn constructor-prev"
                 onClick={() => props.constructorPrev()}>Предыдущий шаг
         </button>
-        <button className={props.burgersConstructor.vegetables !== undefined ?
-          'btn constructor-next' : 'btn constructor-next disabled'}
+        <button className="btn constructor-next"
                 onClick={() => props.constructorNext()}>Следующий шаг
         </button>
       </div>
 
-      <div className={props.constructorStep === 6 ? 'constructor-step active' : 'constructor-step'}>
-        accept
+      <div
+        className={props.constructorStep === 6 ? 'constructor-step final-step active' : 'constructor-step final-step'}>
+        {Object.entries(props.burgersConstructor)
+          .map((ingredient, i) => <div key={i} className="ingredient">
+                 {ingredient[0] === 'bun' ? 'Основа:' :
+                   ingredient[0] === 'meat' ? 'Мясо:' :
+                     ingredient[0] === 'cheese' ? 'Сыры:' :
+                       ingredient[0] === 'sauce' ? 'Соусы:' :
+                         'Овощи:'}
+                 {ingredient[1].map((item, i) => <p key={i}>● {item.ingredientName} - {item.price} UAH</p>)}
+               </div>
+          )}
+        <button className="btn constructor-prev"
+                onClick={() => props.constructorPrev()}>Предыдущий шаг
+        </button>
+        <button style={props.constructorStep === 6 ? {display: 'inline-block'} : {display: 'none'}}
+                className="btn constructor-next"
+                onClick={() => handleAddToCart(props.burgersConstructor)}>Добавить в заказ
+        </button>
       </div>
 
+      <div className="constructor-sum">Стоимость бургера: <span>{props.getConstructorSum} UAH</span></div>
     </div>
   );
 };
@@ -186,14 +225,17 @@ const BurgerConstructor = (props) => {
 const mapStateToProps = state => ({
   ingredients: state.ingredients,
   constructorStep: state.constructorStep,
-  burgersConstructor: state.burgersConstructor
+  burgersConstructor: state.burgersConstructor,
+  getConstructorSum: getConstructorSum(state)
 });
 
 const mapDispatchToProps = dispatch => ({
-  ingredientAdd: bindActionCreators(ingredientAdd, dispatch),
-  ingredientRemove: bindActionCreators(ingredientRemove, dispatch),
-  constructorNext: bindActionCreators(constructorNext, dispatch),
-  constructorPrev: bindActionCreators(constructorPrev, dispatch)
-});
+    ingredientAdd: bindActionCreators(ingredientAdd, dispatch),
+    ingredientRemove: bindActionCreators(ingredientRemove, dispatch),
+    constructorNext: bindActionCreators(constructorNext, dispatch),
+    constructorPrev: bindActionCreators(constructorPrev, dispatch),
+    addToCart: bindActionCreators(addToCart, dispatch)
+  })
+;
 
-export default connect(mapStateToProps, mapDispatchToProps)(BurgerConstructor);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BurgerConstructor));

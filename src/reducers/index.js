@@ -251,7 +251,16 @@ export function rootReducer(state = initialState, action) {
       return {...state, cart: action.cart};
 
     case ADD_TO_CART:
-      return dotProp.set(state, `cart`, cart => [...cart, {...action.burger, burgerId: +new Date()}]);
+      if (action.pathname === '/constructor') {
+        Object.values(state.ingredients).map(ingredient => ingredient.map(item => item.added = false));
+        return dotProp.set(
+          dotProp.set(dotProp.set(state, `constructorStep`, 1), `burgersConstructor`, {}),
+          `cart`,
+          cart => [...cart, action.burger]
+        );
+      } else {
+        return dotProp.set(state, `cart`, cart => [...cart, {...action.burger, burgerId: +new Date()}]);
+      }
 
     case REMOVE_FROM_CART:
       const removedBurgerIndex = state.cart.findIndex(burger => burger.burgerId === action.burger.burgerId);
@@ -270,62 +279,58 @@ export function rootReducer(state = initialState, action) {
       return dotProp.set(state, `cart`, []);
 
     case INGREDIENT_ADD:
+      const ingredientAdd = (path, ingredientName) => {
+        const indexOfIngredientAdded = path.findIndex(ingredient => ingredient.ingredientName === action.ingredient.ingredientName);
+        if (ingredientName === 'bun') {
+          path.forEach(ingredient => ingredient.added = false);
+          return dotProp.set(
+            dotProp.set(state, `ingredients.${ingredientName}.${indexOfIngredientAdded}.added`, true),
+            `burgersConstructor.${ingredientName}`,
+            [action.ingredient]
+          );
+        } else {
+          return dotProp.set(
+            dotProp.set(state, `ingredients.${ingredientName}.${indexOfIngredientAdded}.added`, true),
+            `burgersConstructor.${ingredientName}`,
+            ingredient => [...ingredient, action.ingredient]
+          );
+        }
+      };
+
       if (action.ingredientName === 'bun') {
-        const indexOfIngredientAdded = state.ingredients.bun.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
-        return dotProp.set(
-          dotProp.set(
-            dotProp.set(state, `ingredients.bun`, [{ingredientName: 'булочка с кунжутом', price: 80, added: false}, {ingredientName: 'булочка', price: 70, added: false}]),
-            `ingredients.bun.${indexOfIngredientAdded}.added`,
-            true
-          ),
-          `burgersConstructor.bun`,
-          [action.ingredient]
-        );
+        return ingredientAdd(state.ingredients.bun, action.ingredientName);
       } else if (action.ingredientName === 'meat') {
-        const indexOfIngredientAdded = state.ingredients.meat.findIndex(meat => meat.ingredientName === action.ingredient.ingredientName);
-        return dotProp.set(
-          dotProp.set(state, `ingredients.meat.${indexOfIngredientAdded}.added`, true),
-          `burgersConstructor.meat`,
-          meat => [...meat, action.ingredient]
-        );
+        return ingredientAdd(state.ingredients.meat, action.ingredientName);
       } else if (action.ingredientName === 'cheese') {
-        const indexOfIngredientAdded = state.ingredients.cheese.findIndex(cheese => cheese.ingredientName === action.ingredient.ingredientName);
-        return dotProp.set(
-          dotProp.set(state, `ingredients.cheese.${indexOfIngredientAdded}.added`, true),
-          `burgersConstructor.cheese`,
-          cheese => [...cheese, action.ingredient]
-        );
+        return ingredientAdd(state.ingredients.cheese, action.ingredientName);
       } else if (action.ingredientName === 'sauce') {
-        const indexOfIngredientAdded = state.ingredients.sauce.findIndex(sauce => sauce.ingredientName === action.ingredient.ingredientName);
-        return dotProp.set(
-          dotProp.set(state, `ingredients.sauce.${indexOfIngredientAdded}.added`, true),
-          `burgersConstructor.sauce`,
-          sauce => [...sauce, action.ingredient]
-        );
+        return ingredientAdd(state.ingredients.sauce, action.ingredientName);
       } else if (action.ingredientName === 'vegetables') {
-        const indexOfIngredientAdded = state.ingredients.vegetables.findIndex(vegetables => vegetables.ingredientName === action.ingredient.ingredientName);
-        return dotProp.set(
-          dotProp.set(state, `ingredients.vegetables.${indexOfIngredientAdded}.added`, true),
-          `burgersConstructor.vegetables`,
-          vegetables => [...vegetables, action.ingredient]
-        );
+        return ingredientAdd(state.ingredients.vegetables, action.ingredientName);
       } else {
         return state;
       }
 
     case INGREDIENT_REMOVE:
+      const ingredientRemove = (ingredientsPath, constructorPath, ingredientName) => {
+        const indexOfIngredientRemoved = ingredientsPath.findIndex(ingredient => ingredient.ingredientName === action.ingredient.ingredientName);
+        const indexOfConstructorRemoved = constructorPath.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
+        return dotProp.delete(
+          dotProp.set(state, `ingredients.${ingredientName}.${indexOfIngredientRemoved}.added`, false),
+          `burgersConstructor.${ingredientName}.${indexOfConstructorRemoved}`
+        );
+      };
+
       if (action.ingredientName === 'bun') {
-        const indexOfIngredientRemoved = state.ingredients.bun.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
-        const indexOfConstructorRemoved = state.burgersConstructor.bun.findIndex(bun => bun.ingredientName === action.ingredient.ingredientName);
-        return dotProp.delete(
-          dotProp.set(state, `ingredients.bun.${indexOfIngredientRemoved}.added`, false),
-          `burgersConstructor.bun.${indexOfConstructorRemoved}`);
+        return ingredientRemove(state.ingredients.bun, state.burgersConstructor.bun, action.ingredientName);
       } else if (action.ingredientName === 'meat') {
-        const indexOfIngredientRemoved = state.ingredients.meat.findIndex(meat => meat.ingredientName === action.ingredient.ingredientName);
-        const indexOfConstructorRemoved = state.burgersConstructor.meat.findIndex(meat => meat.ingredientName === action.ingredient.ingredientName);
-        return dotProp.delete(
-          dotProp.set(state, `ingredients.meat.${indexOfIngredientRemoved}.added`, false),
-          `burgersConstructor.meat.${indexOfConstructorRemoved}`);
+        return ingredientRemove(state.ingredients.meat, state.burgersConstructor.meat, action.ingredientName);
+      } else if (action.ingredientName === 'cheese') {
+        return ingredientRemove(state.ingredients.cheese, state.burgersConstructor.cheese, action.ingredientName);
+      } else if (action.ingredientName === 'sauce') {
+        return ingredientRemove(state.ingredients.sauce, state.burgersConstructor.sauce, action.ingredientName);
+      } else if (action.ingredientName === 'vegetables') {
+        return ingredientRemove(state.ingredients.vegetables, state.burgersConstructor.vegetables, action.ingredientName);
       } else {
         return state;
       }
