@@ -248,7 +248,7 @@ export function rootReducer(state = initialState, action) {
       return {...state};
 
     case FETCH_LOCAL_SUCCESS:
-      return {...state, cart: action.cart};
+      return dotProp.set(state, `cart`, action.cart);
 
     case ADD_TO_CART:
       if (action.pathname === '/constructor') {
