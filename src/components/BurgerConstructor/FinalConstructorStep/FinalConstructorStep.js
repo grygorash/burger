@@ -12,6 +12,7 @@ const FinalConstructorStep = props => {
                       burgerId: +new Date(),
                       burgerName: 'Свой Бургер',
                       totalPrice: props.getConstructorSum,
+                      hasDiscount: false,
                       burgerImg: 'https://png.pngtree.com/svg/20161106/hamburger_burger_31438.png',
                       ingredients: {...constructorIngredients}
                     }, props.location.pathname);

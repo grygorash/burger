@@ -19,7 +19,9 @@ const BurgerCart = props =>
                    <div className="cart-item__info">
                      <div className="cart-item__info--details">
                        <div>{burger.burgerName}</div>
-                       <div>{burger.totalPrice} UAH</div>
+                       <div>
+                         {burger.hasDiscount ? <span>{burger.totalPrice * 2} UAH</span> : null}{burger.totalPrice} UAH
+                       </div>
                      </div>
                      <div className="cart-item__info--ingredients">
                        {Object

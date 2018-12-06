@@ -19,6 +19,7 @@ export const initialState = {
       burgerId: 0,
       burgerName: 'San Diego',
       totalPrice: 230,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Burger-San-Diego2-min.jpg',
       ingredients: {
         bun: ['булочка'],
@@ -32,6 +33,7 @@ export const initialState = {
       burgerId: 1,
       burgerName: 'Pulled Pork',
       totalPrice: 255,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Pulled-Pork-min.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -45,6 +47,7 @@ export const initialState = {
       burgerId: 2,
       burgerName: 'Arkansas',
       totalPrice: 225,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Arkansas-min-1.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -58,6 +61,7 @@ export const initialState = {
       burgerId: 3,
       burgerName: 'Williams',
       totalPrice: 245,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Williams-min.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -71,6 +75,7 @@ export const initialState = {
       burgerId: 4,
       burgerName: 'New York',
       totalPrice: 345,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/New-York-min.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -84,6 +89,7 @@ export const initialState = {
       burgerId: 5,
       burgerName: 'Kentucky',
       totalPrice: 215,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Kentucky-min.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -97,6 +103,7 @@ export const initialState = {
       burgerId: 6,
       burgerName: 'Indiana',
       totalPrice: 260,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Indiana-min.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -110,6 +117,7 @@ export const initialState = {
       burgerId: 7,
       burgerName: 'Handy Man',
       totalPrice: 340,
+      hasDiscount: false,
       burgerImg: 'https://theburger.ua/wp-content/uploads/Handy-Man-min.jpg',
       ingredients: {
         bun: ['булочка с кунжутом'],
@@ -251,18 +259,30 @@ export function rootReducer(state = initialState, action) {
       return dotProp.set(state, `cart`, action.cart);
 
     case ADD_TO_CART:
+      const burgersArrToAdd = [...state.cart, action.burger];
+      if (burgersArrToAdd.length % 3 === 0) {
+        burgersArrToAdd.sort((a, b) => (a.totalPrice > b.totalPrice) ? 1 : (a.totalPrice < b.totalPrice) ? -1 : 0);
+        burgersArrToAdd[burgersArrToAdd.length / 3 - 1].totalPrice = burgersArrToAdd[burgersArrToAdd.length / 3 - 1].totalPrice * 0.5;
+        burgersArrToAdd[burgersArrToAdd.length / 3 - 1].hasDiscount = true;
+      }
       if (action.pathname === '/constructor') {
         Object.values(state.ingredients).map(ingredient => ingredient.map(item => item.added = false));
         return dotProp.set(
           dotProp.set(dotProp.set(state, `constructorStep`, 1), `burgersConstructor`, {}),
           `cart`,
-          cart => [...cart, action.burger]
+          burgersArrToAdd
         );
       } else {
-        return dotProp.set(state, `cart`, cart => [...cart, {...action.burger, burgerId: +new Date()}]);
+        return dotProp.set(state, `cart`, burgersArrToAdd);
       }
 
     case REMOVE_FROM_CART:
+      const burgersArrToRemove = state.cart;
+      if (burgersArrToRemove.length % 3 === 0) {
+        burgersArrToRemove.sort((a, b) => (a.totalPrice > b.totalPrice) ? 1 : (a.totalPrice < b.totalPrice) ? -1 : 0);
+        burgersArrToRemove[burgersArrToRemove.length / 3 - 1].hasDiscount = false;
+        burgersArrToRemove[burgersArrToRemove.length / 3 - 1].totalPrice = burgersArrToRemove[burgersArrToRemove.length / 3 - 1].totalPrice * 2;
+      }
       const removedBurgerIndex = state.cart.findIndex(burger => burger.burgerId === action.burger.burgerId);
       return dotProp.delete(state, `cart.${removedBurgerIndex}`);
 

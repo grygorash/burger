@@ -14,7 +14,8 @@ const MenuList = (props) =>
               <div className="burger-info__name">Бургер: <span>«{burger.burgerName}»</span></div>
               <div className="burger-info__price">{burger.totalPrice} UAH</div>
             </div>
-            <button className="btn" onClick={() => props.addToCart(burger)}>Добавить в корзину
+            <button className="btn" onClick={() => props.addToCart({...burger, burgerId: +new Date()})}>
+              Добавить в корзину
             </button>
             <div className="burger-info-detail">
               {Object
