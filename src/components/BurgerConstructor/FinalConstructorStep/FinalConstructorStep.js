@@ -21,15 +21,14 @@ const FinalConstructorStep = props => {
   return (
     <div className="final-step">
       {Object.entries(props.burgersConstructor)
-        .map((ingredient, i) =>
-               <div key={i} className="ingredient">
-                 {ingredient[0] === ' bun' ? ' Основа:' :
-                   ingredient[0] === ' meat' ? ' Мясо:' :
-                     ingredient[0] === ' cheese' ? ' Сыры:' :
-                       ingredient[0] === ' sauce' ? ' Соусы:' :
-                         ' Овощи:'}
-                 {ingredient[1].map((item, i) => <p key={i}>● {item.ingredientName} - {item.price} UAH</p>)}
-               </div>
+        .map((ingredient, i) => <div key={i} className="ingredient">
+               {ingredient[0] === 'bun' ? ' Основа:' :
+                 ingredient[0] === 'meat' ? ' Мясо:' :
+                   ingredient[0] === 'cheese' ? ' Сыры:' :
+                     ingredient[0] === 'sauce' ? ' Соусы:' :
+                       ' Овощи:'}
+               {ingredient[1].map((item, i) => <p key={i}>● {item.ingredientName} - {item.price} UAH</p>)}
+             </div>
         )}
       <button className="btn constructor-prev"
               onClick={() => props.constructorPrev()}>Предыдущий шаг
