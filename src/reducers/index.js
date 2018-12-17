@@ -1,3 +1,5 @@
+import * as dotProp from 'dot-prop-immutable';
+
 import {
   ADD_TO_CART,
   CLEAN_CART,
@@ -11,7 +13,6 @@ import {
   MODAL_OPEN,
   REMOVE_FROM_CART
 } from '../actionTypes';
-import * as dotProp from 'dot-prop-immutable';
 
 export const initialState = {
   burgers: [

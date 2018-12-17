@@ -50,38 +50,37 @@ export const addToCart = (burger, pathname) => {
   };
 };
 
-export const removeFromCart = (burger) => {
+export const removeFromCart = burger => {
   return {
     type: REMOVE_FROM_CART,
     burger
   };
 };
 
-export const modalOpen = (modal) => {
+export const modalOpen = modal => {
   return {
     type: MODAL_OPEN,
     modal
   };
 };
 
-export const modalClose = (modal) => {
+export const modalClose = modal => {
   return {
     type: MODAL_CLOSE,
     modal
   };
 };
 
-export const feedbackTel = (tel) => {
+export const feedbackTel = tel => {
   return {
     type: FEEDBACK_TEL,
     tel
   };
 };
 
-export const cleanCart = (burger) => {
+export const cleanCart = () => {
   return {
-    type: CLEAN_CART,
-    burger
+    type: CLEAN_CART
   };
 };
 
